@@ -16,11 +16,6 @@
       background-color: #f4f4f4;
     }
 
-    .button-container {
-      position: relative;
-      display: inline-block;
-    }
-
     button {
       width: 1300px;
       height: 900px;
@@ -119,6 +114,13 @@
           clearInterval(countdown);
           timerEl.style.display = "none";
           inputEl.style.display = "inline-block";
+          
+          if (timeLeft <= 0) {
+          clearInterval(countdown);
+          timerEl.style.display = "none";
+          inputEl.style.display = "inline-block";
+          videoEl.style.display = "block";
+          videoEl.play();
         }
       }, 1000);
     }
