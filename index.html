@@ -16,6 +16,11 @@
       background-color: #f4f4f4;
     }
 
+    .button-container {
+      position: relative;
+      display: inline-block;
+    }
+
     button {
       width: 1300px;
       height: 900px;
@@ -39,7 +44,7 @@
     }
 
     .timer-container {
-      height: 58px; /* height of input or timer so layout doesn’t shift */
+      height: 58px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -63,6 +68,11 @@
       width: 150px;
       opacity: 0.8;
     }
+
+    #endVideo {
+      display: none;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -71,9 +81,13 @@
     <div class="overlay">
       <div class="timer-container">
         <input type="number" id="durationInput" min="1" max="99" value="1" placeholder="Minutes" />
-        <div id="timer">00:00</div>
+        <div id="timer">00</div>
       </div>
       <img src="clo-removebg-preview.png" alt="Overlay Image">
+      <video id="endVideo" width="320" autoplay>
+        <source src="clock.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
     <button onclick="startCountdown()"></button>
   </div>
@@ -82,9 +96,12 @@
     let countdown;
 
     function formatTime(seconds) {
-      const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const secs = String(seconds % 60).padStart(2, '0');
-      return `${mins}:${secs}`;
+      if (seconds >= 60) {
+        return Math.ceil(seconds / 60).toString()
+      } else {
+        const secs = String(seconds % 60).padStart(2, '0');
+        return `00:${secs}`;
+      }
     }
 
     function startCountdown() {
@@ -92,6 +109,7 @@
 
       const inputEl = document.getElementById("durationInput");
       const timerEl = document.getElementById("timer");
+      const videoEl = document.getElementById("endVideo");
 
       let minutes = parseInt(inputEl.value, 10);
 
@@ -104,6 +122,7 @@
 
       inputEl.style.display = "none";
       timerEl.style.display = "block";
+      videoEl.style.display = "none";
       timerEl.textContent = formatTime(timeLeft);
 
       countdown = setInterval(() => {
@@ -111,11 +130,6 @@
         timerEl.textContent = formatTime(timeLeft);
 
         if (timeLeft <= 0) {
-          clearInterval(countdown);
-          timerEl.style.display = "none";
-          inputEl.style.display = "inline-block";
-
-          if (timeLeft <= 0) {
           clearInterval(countdown);
           timerEl.style.display = "none";
           inputEl.style.display = "inline-block";
