@@ -1,63 +1,128 @@
 <!DOCTYPE html>
-<html>
-<body>
- 
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Countdown Timer</title>
+  <title>timer</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f4f4f4;
     }
-    #timer {
-      font-size: 48px;
-      margin: 20px 0;
+
+    .button-container {
+      position: relative;
+      display: inline-block;
     }
+
     button {
-      padding: 600px 700px;
+      width: 1300px;
+      height: 700px;
       font-size: 16px;
       cursor: pointer;
+      position: relative;
+      z-index: 1;
+      background-color: #ccc;
+      border: none;
+      border-radius: 12px;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .timer-container {
+      height: 58px; /* height of input or timer so layout doesn’t shift */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #timer {
+      font-size: 48px;
+      color: red;
+      display: none;
+    }
+
+    #durationInput {
+      width: 120px;
+      font-size: 24px;
+      padding: 5px;
+      text-align: center;
+      pointer-events: auto;
+    }
+
+    .overlay img {
+      width: 150px;
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
 
-  <h1>Countdown Timer</h1>
-  <div id="timer">10</div>
-  <button onclick="startCountdown()">Start Countdown</button>
+  <div class="button-container">
+    <div class="overlay">
+      <div class="timer-container">
+        <input type="number" id="durationInput" min="1" max="99" value="1" placeholder="Minutes" />
+        <div id="timer">00:00</div>
+      </div>
+      <img src="clo-removebg-preview.png" alt="Overlay Image">
+    </div>
+    <button onclick="startCountdown()"></button>
+  </div>
 
   <script>
     let countdown;
+
+    function formatTime(seconds) {
+      const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const secs = String(seconds % 60).padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
     function startCountdown() {
-      clearInterval(countdown); // clear any previous countdowns
-      let timeLeft = 10; // seconds
-      document.getElementById("timer").textContent = timeLeft;
+      clearInterval(countdown);
+
+      const inputEl = document.getElementById("durationInput");
+      const timerEl = document.getElementById("timer");
+
+      let minutes = parseInt(inputEl.value, 10);
+
+      if (isNaN(minutes) || minutes < 1 || minutes > 99) {
+        alert("Please enter a valid number of minutes (1–99).");
+        return;
+      }
+
+      let timeLeft = minutes * 60;
+
+      inputEl.style.display = "none";
+      timerEl.style.display = "block";
+      timerEl.textContent = formatTime(timeLeft);
 
       countdown = setInterval(() => {
         timeLeft--;
-        document.getElementById("timer").textContent = timeLeft;
+        timerEl.textContent = formatTime(timeLeft);
 
         if (timeLeft <= 0) {
           clearInterval(countdown);
+          timerEl.style.display = "none";
+          inputEl.style.display = "inline-block";
         }
       }, 1000);
     }
   </script>
-
-
-  
-
-</body>
-</html>
-
-
-
-
 
 </body>
 </html>
